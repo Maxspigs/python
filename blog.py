@@ -13,14 +13,15 @@ import re
 # This route is the main page of the blog
 # XXX TP1 add optionnal pagination parameters here
 @bottle.route('/')
-def blog_index():
+@bottle.route('/<page_number>')
+def blog_index(page_number="1"):
 
     cookie = bottle.request.get_cookie("session")
 
     username = sessions.get_username(cookie)
 
     # even if there is no logged in user, we can show the blog
-    l = posts.get_posts(10)
+    l = posts.get_posts(10, int(page_number))
 
     return bottle.template('blog_template', dict(myposts=l, username=username))
 

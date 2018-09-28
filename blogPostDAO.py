@@ -43,12 +43,12 @@ class BlogPostDAO:
 
     # returns an array of num_posts posts, reverse ordered by date.
     # XXX TP1 work here change function signature to implement pagination.
-    def get_posts(self, num_posts):
+    def get_posts(self, num_posts, page_number):
 
         cursor = iter(())  # Using an empty itable for a placeholder so blog compiles before you make your changes
 
         # XXX TP1 Work here to get the num_posts posts
-        cursor = self.posts.find()[:num_posts]
+        cursor = self.posts.find()[:num_posts].skip( ( ( page_number - 1 ) * num_posts ) if page_number > 0 else 0 ).limit( num_posts )
         l = []
 
         for post in cursor:
@@ -89,7 +89,7 @@ class BlogPostDAO:
 
         try:
             # XXX TP1 Work here to add the comment to the designated post. When done, modify the line below to return the number of documents updated by your modification, rather than just -1.
-            number_of_document = self.posts.update_one({'permalink':permalink}, {'$push': {'comments':comment} })
+            number_of_document = self.posts.update_many({'permalink':permalink}, {'$push': {'comments':comment} })
 
             return number_of_document          # return the number of documents updated
 
